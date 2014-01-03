@@ -324,7 +324,7 @@
           (recur next-num (conj circulars next-num))))))
 
 (defn impossible-circular-prime?
-  "Checks is a number cannot be a circular prime by its digits"
+  "Checks if a number cannot be a circular prime by its digits"
   [n]
   (if (and (> n 10) (re-find #"[0|2|4|6|8]" (str n)))
     true
