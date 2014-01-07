@@ -354,6 +354,11 @@
   [array]
   (reduce * (map #(array %) (take 4 (iterate inc 0)))))
 
+(defn value-of-word
+  "Returns value of a word by summing each letter ranking in the english alphabet"
+  [n]
+  (reduce + (map #(inc (.indexOf "ABCDEFGHIJKLMNOPQRSTUVWXYZ" (str %))) (vec n))))
+
 ;
 ; Experimental code
 ;
