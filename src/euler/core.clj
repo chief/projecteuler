@@ -169,7 +169,6 @@
   [n]
   (reduce + (divisors n)))
 
-
 (defn amicable-pair
   "Given a number returns its amicable pair or nil"
   [n]
@@ -244,7 +243,7 @@
 (defn read-numbers
   "Reads numbers from a file"
   [filename]
-    (map bigint (line-seq (reader filename))))
+  (map bigint (line-seq (reader filename))))
 
 (defn digit-factorial-number?
   "Check if a number n is equal to the sum of the factorial of its digits"
