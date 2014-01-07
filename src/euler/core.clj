@@ -18,66 +18,70 @@
   (= (mod n x) 0))
 
 (defn square-of-the-sum
-  "Sums sequence and applies square in the sum"
+  "Sums sequence s and applies square in the result"
   [s]
   (Math/pow (apply + s) 2))
 
 (defn sum-of-squares
-  "Squares a sequence and sums each square"
+  "Sums the squares of a sequence s"
   [s]
   (apply + (map #(Math/pow % 2) s)))
 
 (defn remove-multiples-of
+  "Given a sequence s and a number n, removes all multiples of number n that
+   belong to s"
   [n s]
   (if (= n 1)
     s
     (remove #(and (divide? n %) (not (= n %))) s)))
 
 (defn remove-all-multiples-of
+  "Given a sequence s and a number n, removes all multiples of number n that
+   belong to s and n itself"
   [n s]
   (remove #(= n %) (remove-multiples-of n s)))
 
 (defn divisors
   "Returns all divisors for a number n"
   [n]
-    (let [divisors (range 2 (/ (inc n) 2))]
-      (filter #(divide? % n) divisors)))
+  (let [divisors (range 2 (/ (inc n) 2))]
+    (filter #(divide? % n) divisors)))
 
 (defn divisors-v3
   "Returns all divisors for a number n"
   [n]
-    (loop [divisors [] x 2]
-      (if (> (* x x) n)
-        (conj divisors 1 n)
-        (if (divide? x n)
-          (recur (conj divisors x (/ n x)) (inc x))
-          (recur divisors (inc x))))))
-
-(defn proper-divisors-v1
-  "Returns all proper divisors of number n"
-  [n]
-    (loop [divisors [] x 2]
-      (if (> (* x x) n)
-        (conj divisors 1)
-        (if (divide? x n)
-          (recur (conj divisors x (/ n x)) (inc x))
-          (recur divisors (inc x))))))
+  (loop [divisors [] x 2]
+    (if (> (* x x) n)
+      (conj divisors 1 n)
+      (if (divide? x n)
+        (recur (conj divisors x (/ n x)) (inc x))
+        (recur divisors (inc x))))))
 
 (defn divisors-v2
   "Returns all divisors for a number n"
   [n]
-    (loop [divisors (range 1 (/ (inc n) 2)) position 0]
-      (let [current-divisor (nth divisors position)]
-        (if (= current-divisor (last divisors))
-          (conj divisors n)
-          (if (divide? current-divisor n)
-            (recur divisors (inc position))
-            (recur (remove-all-multiples-of current-divisor divisors) position))))))
+  (loop [divisors (range 1 (/ (inc n) 2)) position 0]
+    (let [current-divisor (nth divisors position)]
+      (if (= current-divisor (last divisors))
+        (conj divisors n)
+        (if (divide? current-divisor n)
+          (recur divisors (inc position))
+          (recur (remove-all-multiples-of current-divisor divisors) position))))))
 
+(defn proper-divisors-v1
+  "Returns all proper divisors of number n
+   See: https://en.wikipedia.org/wiki/Divisor"
+  [n]
+  (loop [divisors [] x 2]
+    (if (> (* x x) n)
+      (conj divisors 1)
+      (if (divide? x n)
+        (recur (conj divisors x (/ n x)) (inc x))
+        (recur divisors (inc x))))))
 
 (defn triangle-number
   [n]
-    (reduce + (natural-numbers n)))
+  (reduce + (natural-numbers n)))
 
 (def seq-of-triangle-numbers
   (map first (iterate (fn [[a b]] [ (+ a b) (inc b)]) [1 2])))
@@ -102,18 +106,18 @@
 
 (defn dividable?
   [s n]
-    (> (count (filter #(= (mod % n) 0) s)) 0))
+  (> (count (filter #(= (mod % n) 0) s)) 0))
 
 (def few-primes [2 3 5 7 9 11 13 17 19])
 
 (defn find-smaller-divider
   [s primes]
-    (let [x (first primes)]
-      (if (dividable? s x)
-        x
-        (if (empty? primes)
-          nil
-          (find-smaller-divider s (rest primes))))))
+  (let [x (first primes)]
+    (if (dividable? s x)
+      x
+      (if (empty? primes)
+        nil
+        (find-smaller-divider s (rest primes))))))
 
 (defn alter-on-perfect-division
   [s n]
@@ -133,15 +137,15 @@
 (defn factorization
   "Integer factorization to primes"
   [n]
-    (let [primes (sieve-of-eratosthenes (inc (/ n 2)))]
-      (loop [x n factors []]
-        (let [divisor (first (filter #(divide? % x) primes))]
-          (if (nil? divisor)
-            []
-            (let [result (/ x divisor)]
-              (if (= result 1)
-                (conj factors divisor)
-                (recur result (conj factors divisor)))))))))
+  (let [primes (sieve-of-eratosthenes (inc (/ n 2)))]
+    (loop [x n factors []]
+      (let [divisor (first (filter #(divide? % x) primes))]
+        (if (nil? divisor)
+          []
+          (let [result (/ x divisor)]
+            (if (= result 1)
+              (conj factors divisor)
+              (recur result (conj factors divisor)))))))))
 
 
 (defn collatz-number
@@ -278,7 +282,6 @@
   [n]
   (/ (* n (- (* 3 n) 1)) 2))
 
-
 (defn number-permutations
   "Returns all permutations of a number n with the same number of digits that
    are greater from n"
@@ -339,7 +342,6 @@
                   (circular-prime? % primes))
      primes)))
 
-
 (defn lattice-paths
   [x y]
   (if (and (> x 1) (> y 1))
@@ -347,7 +349,6 @@
     1))
 
 (def memo-lattice-paths (memoize lattice-paths))
-
 
 (defn max-product-array
   [array]
