@@ -27,10 +27,6 @@
   [s]
   (apply + (map #(Math/pow % 2) s)))
 
-; (defn old-remove-multiples-of
-;   [n s]
-;   (sort (difference (set s) (set (range (Math/pow n 2) (+ (last s) 1) n)))))
-
 (defn remove-multiples-of
   [n s]
   (if (= n 1)
