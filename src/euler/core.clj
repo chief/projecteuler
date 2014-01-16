@@ -3,12 +3,8 @@
 (use '[clojure.set :refer [difference]])
 (use 'criterium.core)
 (use 'clojure.math.combinatorics)
-
-; reading files
 (use '[clojure.java.io :only (reader)])
-
 (use 'clojure.math.numeric-tower)
-; (require '[clojure.str :as str ])
 
 (def natural-numbers (iterate inc 1))
 
@@ -47,15 +43,6 @@
   (let [divisors (range 2 (/ (inc n) 2))]
     (filter #(divide? % n) divisors)))
 
-(defn divisors-v3
-  "Returns all divisors for a number n"
-  [n]
-  (loop [divisors [] x 2]
-    (if (> (* x x) n)
-      (conj divisors 1 n)
-      (if (divide? x n)
-        (recur (conj divisors x (/ n x)) (inc x))
-        (recur divisors (inc x))))))
 
 (defn divisors-v2
   "Returns all divisors for a number n"
@@ -67,6 +54,16 @@
         (if (divide? current-divisor n)
           (recur divisors (inc position))
           (recur (remove-all-multiples-of current-divisor divisors) position))))))
+
+(defn divisors-v3
+  "Returns all divisors for a number n"
+  [n]
+  (loop [divisors [] x 2]
+    (if (> (* x x) n)
+      (conj divisors 1 n)
+      (if (divide? x n)
+        (recur (conj divisors x (/ n x)) (inc x))
+        (recur divisors (inc x))))))
 
 (defn proper-divisors-v1
   "Returns all proper divisors of number n
@@ -102,7 +99,6 @@
       (if (> (Math/pow current-prime 2) (last primes))
         primes
         (recur (remove-multiples-of current-prime primes) (inc position))))))
-
 
 (defn dividable?
   [s n]
@@ -146,7 +142,6 @@
             (if (= result 1)
               (conj factors divisor)
               (recur result (conj factors divisor)))))))))
-
 
 (defn collatz-number
   "Returns a collatz number"
