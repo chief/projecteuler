@@ -328,6 +328,37 @@
   [n primes]
   (every? #(prime-number? % primes) (circular-numbers n)))
 
+(defn left-truncate-numbers
+  "Returns all numbers by truncate the digits of number n from left to right"
+  [n]
+    (let [d (digits n)]
+      (loop [x d numbers []]
+        (let [r (rest x)]
+          (if (empty? r)
+            numbers
+            (recur r (conj numbers (digits-to-integer r))))))))
+
+(defn right-truncate-numbers
+  "Returns all numbers by truncate the digits of number n from right to left"
+  [n]
+   (let [d (vec (digits n))]
+      (loop [x d numbers []]
+        (let [r (pop x)]
+          (if (empty? r)
+            numbers
+            (recur r (conj numbers (digits-to-integer r))))))))
+
+
+(defn truncate-numbers
+  "Returns left and right truncate numbers for number n"
+  [n]
+  (distinct (flatten (conj (right-truncate-numbers n) (left-truncate-numbers n)))))
+
+(defn truncatable-prime?
+  "Checks if a prime number is truncatable or not"
+  [n primes]
+  (every? #(prime-number? % primes) (sort (truncate-numbers n))))
+
 (defn circular-primes
   "Returns all circular primes below number n"
   [n]
