@@ -71,7 +71,7 @@
   [n]
   (loop [divisors [] x 2]
     (if (> (* x x) n)
-      (conj divisors 1)
+      (vec (distinct (conj divisors 1)))
       (if (divide? x n)
         (recur (conj divisors x (/ n x)) (inc x))
         (recur divisors (inc x))))))
