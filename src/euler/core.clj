@@ -386,6 +386,18 @@
   [n]
   (reduce + (map #(inc (.indexOf "ABCDEFGHIJKLMNOPQRSTUVWXYZ" (str %))) (vec n))))
 
+(defn summary-criterion
+  "Given an ordered sequence s containing positive numbers and a positive number
+   n checks if n can b written as a sum of two numbers from s."
+  [s, n]
+  (if (<= n (first s))
+    false
+    (or (not (= (.indexOf s (/ n 2)) -1))
+        (let [new-sequence (filter #(< % n) s)]
+          (boolean
+            (some #(>= (.indexOf new-sequence %) 0)
+              (map #(- n %) new-sequence)))))))
+
 ;
 ; Experimental code
 ;
