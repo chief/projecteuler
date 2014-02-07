@@ -193,7 +193,9 @@
   (< (reduce + (proper-divisors-v1 n)) n))
 
 (defn abundant-number?
-  "Checks if a number is an abundant number"
+  "Checks if a number is an abundant number.
+
+   For more information visit https://en.wikipedia.org/wiki/Abundant_number"
   [n]
   (> (reduce + (proper-divisors-v1 n)) n))
 
