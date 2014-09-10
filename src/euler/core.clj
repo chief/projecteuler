@@ -11,18 +11,9 @@
 (defn divide?
   "Checks if number x divides n"
   [x n]
-  (= (mod n x) 0))
+  (= (rem n x) 0))
 
-(defn square-of-the-sum
-  "Sums sequence s and applies square in the result"
-  [s]
-  (Math/pow (apply + s) 2))
-
-(defn sum-of-squares
-  "Sums the squares of a sequence s"
-  [s]
-  (apply + (map #(Math/pow % 2) s)))
-
+; FIXME
 (defn remove-multiples-of
   "Given a sequence s and a number n, removes all multiples of number n that
    belong to s"
@@ -31,54 +22,37 @@
     s
     (remove #(and (divide? n %) (not (= n %))) s)))
 
+; FIXME
 (defn remove-all-multiples-of
   "Given a sequence s and a number n, removes all multiples of number n that
    belong to s and n itself"
   [n s]
   (remove #(= n %) (remove-multiples-of n s)))
 
+(defn multiples-of
+  "Gets all multiples between [n, x]"
+  [n x]
+  (if (nil? x)
+    '()
+    (take-while #(<= % x) (iterate #(+ n %) n))))
+
 (defn divisors
-  "Returns all divisors for a number n"
+  "Gets divisors of number n"
   [n]
-  (let [divisors (range 2 (/ (inc n) 2))]
-    (filter #(divide? % n) divisors)))
-
-
-(defn divisors-v2
-  "Returns all divisors for a number n"
-  [n]
-  (loop [divisors (range 1 (/ (inc n) 2)) position 0]
-    (let [current-divisor (nth divisors position)]
-      (if (= current-divisor (last divisors))
-        (conj divisors n)
-        (if (divide? current-divisor n)
-          (recur divisors (inc position))
-          (recur (remove-all-multiples-of current-divisor divisors) position))))))
-
-(defn divisors-v3
-  "Returns all divisors for a number n"
-  [n]
-  (loop [divisors [] x 2]
+  (loop [divisors [n 1] x 2]
     (if (> (* x x) n)
-      (conj divisors 1 n)
+      (distinct divisors)
       (if (divide? x n)
         (recur (conj divisors x (/ n x)) (inc x))
         (recur divisors (inc x))))))
 
-(defn proper-divisors-v1
-  "Returns all proper divisors of number n
-   See: https://en.wikipedia.org/wiki/Divisor"
-  [n]
-  (loop [divisors [] x 2]
-    (if (> (* x x) n)
-      (vec (distinct (conj divisors 1)))
-      (if (divide? x n)
-        (recur (conj divisors x (/ n x)) (inc x))
-        (recur divisors (inc x))))))
 
-(defn triangle-number
+(defn proper-divisors
+  "Gets proper divisors of number n
+
+   https://en.wikipedia.org/wiki/Divisor"
   [n]
-  (reduce + (natural-numbers n)))
+  (rest (divisors n)))
 
 (def seq-of-triangle-numbers
   (map first (iterate (fn [[a b]] [ (+ a b) (inc b)]) [1 2])))
@@ -86,11 +60,6 @@
 (defn factorial
   [n]
   (reduce *' (take n natural-numbers)))
-
-(defn digits
-  "Returns a seq of digits of number n"
-  [n]
-  (map #(Integer/parseInt (Character/toString %)) (str n)))
 
 (defn sieve-of-eratosthenes
   [n]
@@ -160,7 +129,7 @@
         (recur collatz (conj numbers collatz))))))
 
 (defn sum-of-divisors
-  "Returns the sum of divisors for a number n"
+  "Sum of divisors for number n."
   [n]
   (reduce + (divisors n)))
 
@@ -185,19 +154,19 @@
 (defn perfect-number?
   "Checks if a number is a perfect number"
   [n]
-  (= (reduce + (proper-divisors-v1 n)) n))
+  (= (reduce + (proper-divisors n)) n))
 
 (defn deficient-number?
   "Checks if a number is a deficient number"
   [n]
-  (< (reduce + (proper-divisors-v1 n)) n))
+  (< (reduce + (proper-divisors n)) n))
 
 (defn abundant-number?
   "Checks if a number is an abundant number.
 
    For more information visit https://en.wikipedia.org/wiki/Abundant_number"
   [n]
-  (> (reduce + (proper-divisors-v1 n)) n))
+  (> (reduce + (proper-divisors n)) n))
 
 (defn sum-of-duets
   [s]
@@ -272,11 +241,6 @@
   (reduce (fn [x y]
             (distinct (apply conj x y)))
   (map #(powers % max-power) (range 2 (inc max-n)))))
-
-(defn pentagon-number
-  "Returns a pentagon number with rank n"
-  [n]
-  (/ (* n (- (* 3 n) 1)) 2))
 
 (defn number-permutations
   "Returns all permutations of a number n with the same number of digits that
@@ -398,6 +362,18 @@
             (some #(>= (.indexOf new-sequence %) 0)
               (map #(- n %) new-sequence)))))))
 
+(defn ackermann
+  "Computes the Ackermann function
+
+   https://en.wikipedia.org/wiki/Ackermann_function"
+   [x y]
+   (cond
+      (= y 0) 0
+      (= x 0) (* 2 y)
+      (= y 1) 2
+      :else
+        (ackermann (dec x) (ackermann x (dec y)))))
+
 ;
 ; Experimental code
 ;
@@ -427,38 +403,3 @@
       (if (prime-number? subject primes)
         (recur (inc x) (conj results subject))
         (recur (inc x) results)))))
-
-; (defn english-to-character
-;   "Given a number n tranform it to english characters"
-;   [n]
-;   (case n
-;     0 "zero"
-;     1 "one"
-;     2 "two"
-;     3 "three"
-;     4 "four"
-;     5 "five"
-;     6 "six"
-;     7 "seven"
-;     8 "eight"
-;     9 "nine"
-;     10 "ten"
-;     11 "eleven"
-;     12 "twelve"
-;     13 "thirteen"
-;     14 "fourteen"
-;     15 "fifteen"
-;     16 "sixteen"
-;     17 "seventeen"
-;     18 "eighteen"
-;     19 "nineteen"
-;     20 "twenty"
-;     30 "thirty"
-;     40 "forty"
-;     50 "fifty"
-;     60 "sixty"
-;     70 "seventy"
-;     80 "eighty"
-;     90 "ninety"
-;     100 "hundred"
-
