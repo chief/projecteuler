@@ -1,12 +1,12 @@
 (ns euler.core
-  (:require [clojure.math.combinatorics :as combo]))
-(use '[clojure.set :refer [difference]])
-(use 'criterium.core)
-(use 'clojure.math.combinatorics)
-(use '[clojure.java.io :only (reader)])
-(use 'clojure.math.numeric-tower)
-
-(def natural-numbers (iterate inc 1))
+  (:require [clojure.math.combinatorics :as combo])
+  (:use [clojure.set :refer [difference]]
+        [criterium.core]
+        [clojure.math.combinatorics]
+        [clojure.java.io :only (reader)]
+        [clojure.math.numeric-tower]
+        [euler.numbers]
+        [euler.utils]))
 
 (defn divide?
   "Checks if number x divides n"
