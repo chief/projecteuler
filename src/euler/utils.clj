@@ -24,10 +24,19 @@
       r
       (recur (rest x) (conj r (take n (flatten (partition 1 k x))))))))
 
+(defn read-numbers
+  "Reads numbers from a file"
+  [filename]
+  (map bigint (line-seq (reader filename))))
+
+
 (defn parse-words
   [filename]
   (clojure.string/split
     (clojure.string/replace (line-seq (reader filename))  #"[\"|\\|\)|\()]" "")
     #","))
+
+
+
 
 ; 48477312 51267216 48477312

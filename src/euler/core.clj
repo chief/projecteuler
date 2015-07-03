@@ -1,11 +1,11 @@
 (ns euler.core
-  (:require [clojure.math.combinatorics :as combo])
+  (:require [clojure.math.combinatorics :as combo]
+            [euler.numbers :as numbers]
+            [clojure.math.numeric-tower :as numeric-tower])
   (:use [clojure.set :refer [difference]]
         [criterium.core]
         [clojure.math.combinatorics]
         [clojure.java.io :only (reader)]
-        [clojure.math.numeric-tower]
-        [euler.numbers]
         [euler.utils]))
 
 (defn divide?
@@ -13,31 +13,10 @@
   [x n]
   (= (rem n x) 0))
 
-; FIXME
-(defn remove-multiples-of
-  "Given a sequence s and a number n, removes all multiples of number n that
-   belong to s"
-  [n s]
-  (if (= n 1)
-    s
-    (remove #(and (divide? n %) (not (= n %))) s)))
-
-; FIXME
-(defn remove-all-multiples-of
-  "Given a sequence s and a number n, removes all multiples of number n that
-   belong to s and n itself"
-  [n s]
-  (remove #(= n %) (remove-multiples-of n s)))
-
-(defn multiples-of
-  "Gets all multiples between [n, x]"
-  [n x]
-  (if (nil? x)
-    '()
-    (take-while #(<= % x) (iterate #(+ n %) n))))
-
 (defn divisors
-  "Gets divisors of number n"
+  "Gets divisors of number n.
+
+   First number is n second number is 1 followed by other divisors - if exist."
   [n]
   (loop [divisors [n 1] x 2]
     (if (> (* x x) n)
@@ -46,6 +25,10 @@
         (recur (conj divisors x (/ n x)) (inc x))
         (recur divisors (inc x))))))
 
+(defn factorial
+  "Calculates the factorial (n!) of number n"
+  [n]
+  (reduce *' (take n numbers/naturals)))
 
 (defn proper-divisors
   "Gets proper divisors of number n
@@ -54,50 +37,24 @@
   [n]
   (rest (divisors n)))
 
-(def seq-of-triangle-numbers
-  (map first (iterate (fn [[a b]] [ (+ a b) (inc b)]) [1 2])))
-
-(defn factorial
-  [n]
-  (reduce *' (take n natural-numbers)))
+(defn remove-multiples-of
+  "Given a number n and a sequence s, removes all multiples of number n that
+   belong to s"
+  [n s]
+  (if (= n 1)
+    s
+    (remove #(and (divide? n %) (not (= n %))) s)))
 
 (defn sieve-of-eratosthenes
+  "Calculate prime numbers up to number n
+
+   https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes"
   [n]
   (loop [primes (range 2 (inc n)) position 0]
     (let [current-prime (nth primes position)]
       (if (> (Math/pow current-prime 2) (last primes))
         primes
         (recur (remove-multiples-of current-prime primes) (inc position))))))
-
-(defn dividable?
-  [s n]
-  (> (count (filter #(= (mod % n) 0) s)) 0))
-
-(def few-primes [2 3 5 7 9 11 13 17 19])
-
-(defn find-smaller-divider
-  [s primes]
-  (let [x (first primes)]
-    (if (dividable? s x)
-      x
-      (if (empty? primes)
-        nil
-        (find-smaller-divider s (rest primes))))))
-
-(defn alter-on-perfect-division
-  [s n]
-  (map #(if (= (mod % n) 0) (/ % n) %) s))
-
-(defn lcd
-  ([s]
-    (lcd s []))
-  ([s n]
-    (if (= (count s) (apply + s))
-      (apply * n)
-      (let [divider (find-smaller-divider s few-primes)]
-        (if (nil? divider)
-          (println "fail")
-        (lcd (alter-on-perfect-division s divider) (conj n divider)))))))
 
 (defn factorization
   "Integer factorization to primes"
@@ -112,83 +69,70 @@
               (conj factors divisor)
               (recur result (conj factors divisor)))))))))
 
-(defn collatz-number
-  "Returns a collatz number"
-  [n]
-  (if (even? n)
-    (/ n 2)
-    (+ (* 3 n) 1)))
-
-(defn collatz-sequence
-  "Returns a Collatz sequence given a starting number n"
-  [n]
-  (loop [x n numbers []]
-    (let [collatz (collatz-number x)]
-      (if (= 1 collatz)
-        (conj numbers 1)
-        (recur collatz (conj numbers collatz))))))
-
 (defn sum-of-divisors
-  "Sum of divisors for number n."
+  "Sum of divisors for number n"
   [n]
   (reduce + (divisors n)))
 
-(defn amicable-pair
-  "Given a number returns its amicable pair or nil"
-  [n]
-  (let [result (sum-of-divisors n)]
-    (if (and (not (= result n)) (= (sum-of-divisors result) n))
-      result
-      nil)))
 
-(defn amicable?
-  "Checks if a number is amicable"
-  [n]
-  (not (= (amicable-pair n) nil)))
+(defn dividable?
+  "Checks whether any item of a sequence s is divided by number n"
+  [s n]
+  (some #(true? (divide? n %)) s))
 
-(defn prime-number?
-  "Checks if a number is a prime number given a known set of primes"
-  [n primes]
-  (not (= (.indexOf primes n) -1)))
-
-(defn perfect-number?
-  "Checks if a number is a perfect number"
-  [n]
-  (= (reduce + (proper-divisors n)) n))
-
-(defn deficient-number?
-  "Checks if a number is a deficient number"
-  [n]
-  (< (reduce + (proper-divisors n)) n))
-
-(defn abundant-number?
-  "Checks if a number is an abundant number.
-
-   For more information visit https://en.wikipedia.org/wiki/Abundant_number"
-  [n]
-  (> (reduce + (proper-divisors n)) n))
 
 (defn sum-of-duets
+  "Retuns the sum of all duets (no duplication) in a sequence s"
   [s]
   (map #(reduce + %) (combinations s 2)))
 
-(defn abundant-numbers
-  "Take abundant numbers up to n"
+(defn self-power-number
+  "Returns the self power of a number n"
   [n]
-  (filter abundant-number? (take n natural-numbers)))
-
-(defn count-of-digits
-  "Returns the number of digits of number n"
-  [n]
-  (count (str n)))
-
-(def fibonacci-numbers
-  (map first (iterate (fn [[a b]] [ (+' a b) a]) [1 0])))
+  (numeric-tower/expt n n))
 
 (defn quadratic-formula
   "Applies quadratic formula in number n given a and b coefficients"
   [n a b]
   (+ (* n n ) (* a n) b))
+
+(defn my-gcd
+  "Gets great common divisor of two numbers
+
+   https://en.wikipedia.org/wiki/Euclidean_algorithm"
+  [x y]
+  (if (= x y)
+    x
+    (if (< x y)
+      (recur x (- y x))
+      (recur (- x y) y))))
+
+(defn my-lcm
+  "Gets least common multiple.
+
+   https://en.wikipedia.org/wiki/Least_common_multiple"
+  [x y]
+  (/ (numeric-tower/abs (* x y)) (my-gcd x y)))
+
+(defn digit-factorial-number?
+  "Checks if a number n is equal to the sum of the factorial of its digits"
+  [n]
+  (= (reduce + (map factorial (numbers/digits n))) n))
+
+(defn digit-x-power?
+  "Checks if a number n is equal to the sum of its digits powered by x"
+  [n x]
+  (= (int (reduce + (map #(Math/pow % x) (numbers/digits n)))) n))
+
+;
+; Untested code ****************************************************************
+;
+
+
+(defn prime-number?
+  "Checks if a number is a prime number given a known set of primes"
+  [n primes]
+  (not (= (.indexOf primes n) -1)))
 
 (defn count-quadratic-formulas
   "Counts the succesive times of a quadratic formula"
@@ -206,35 +150,14 @@
         (for [x (range (- max-a) max-a)
               y (range 2 max-b)] [x y])))))
 
-(defn read-numbers
-  "Reads numbers from a file"
-  [filename]
-  (map bigint (line-seq (reader filename))))
 
-(defn digit-factorial-number?
-  "Check if a number n is equal to the sum of the factorial of its digits"
-  [n]
-  (= (reduce + (map factorial (digits n))) n))
 
-(defn digit-fifth-power?
-  "Checks if a number n is equal to the sum of fifths of its digits"
-  [n]
-  (= (int (reduce + (map #(Math/pow % 5) (digits n)))) n))
 
-(defn self-power-number
-  "Returns the self power of a number n"
-  [n]
-  (expt n n))
-
-(defn pandigital-number?
-  "Checks if a number is a pandigital number"
-  [n]
-  (= (sort (digits n)) (range 1 (inc (count (digits n))))))
 
 (defn powers
   "Returns all powers of number n between 2 <= b <= (max power)"
   [n max-power]
-  (map #(expt n %) (range 2 (inc max-power))))
+  (map #(numeric-tower/expt n %) (range 2 (inc max-power))))
 
 (defn sequence-of-powers
   [max-n max-power]
@@ -247,8 +170,8 @@
    are greater from n"
   [n]
   (remove #(= n %)
-    (filter #(and (= (count-of-digits %) (count-of-digits n)) (> % n))
-      (map #(Integer/parseInt(apply str %)) (permutations (digits n))))))
+    (filter #(and (= (numbers/count-of-digits %) (numbers/count-of-digits n)) (> % n))
+      (map #(Integer/parseInt(apply str %)) (permutations (numbers/digits n))))))
 
 (defn prime-number-permutations
   "Returns prime number permutations given a number n"
@@ -276,7 +199,7 @@
   "Returns all circular numbers of number n"
   [n]
     (loop [x n circulars []]
-      (let [d (digits x)
+      (let [d (numbers/digits x)
             next-num (digits-to-integer (conj (vec (rest d)) (first d)))]
         (if (or (= next-num x) (= next-num n))
           circulars
@@ -297,7 +220,7 @@
 (defn left-truncate-numbers
   "Returns all numbers by truncate the digits of number n from left to right"
   [n]
-    (let [d (digits n)]
+    (let [d (numbers/digits n)]
       (loop [x d numbers []]
         (let [r (rest x)]
           (if (empty? r)
@@ -307,7 +230,7 @@
 (defn right-truncate-numbers
   "Returns all numbers by truncate the digits of number n from right to left"
   [n]
-   (let [d (vec (digits n))]
+   (let [d (vec (numbers/digits n))]
       (loop [x d numbers []]
         (let [r (pop x)]
           (if (empty? r)
@@ -374,6 +297,43 @@
       :else
         (ackermann (dec x) (ackermann x (dec y)))))
 
+(defn amicable-pair
+  "Given a number returns its amicable pair or nil"
+  [n]
+  (let [result (sum-of-divisors n)]
+    (if (and (not (= result n)) (= (sum-of-divisors result) n))
+      result
+      nil)))
+
+(defn amicable?
+  "Checks if a number is amicable"
+  [n]
+  (not (= (amicable-pair n) nil)))
+
+
+(defn abundant-number?
+  "Checks if a number is an abundant number.
+
+   For more information visit https://en.wikipedia.org/wiki/Abundant_number"
+  [n]
+  (> (reduce + (proper-divisors n)) n))
+
+(defn abundant-numbers
+  "Take abundant numbers up to n"
+  [n]
+  (filter abundant-number? (take n numbers/naturals)))
+
+(defn deficient-number?
+  "Checks if a number is a deficient number"
+  [n]
+  (< (reduce + (proper-divisors n)) n))
+
+(defn perfect-number?
+  "Checks if a number is a perfect number"
+  [n]
+  (= (reduce + (proper-divisors n)) n))
+
+
 ;
 ; Experimental code
 ;
@@ -390,7 +350,7 @@
 (defn power-ten-divisor
   "Returns the maximum power ten divisor"
   [n]
-  (expt 10 (dec (count (digits n)))))
+  (numeric-tower/expt 10 (dec (count (numbers/digits n)))))
 
 (defn consecutive-prime-sum
   "Examines the count of consecutive prime sum that results to a prime"
