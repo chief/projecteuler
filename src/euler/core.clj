@@ -73,6 +73,10 @@
   [s]
   (Integer/parseInt (apply str s)))
 
+(defn concatenated-product
+  [number n]
+  (digits-to-integer (flatten (map #(* number %) (range 1 (inc n))))))
+
 (defn circular-numbers
   "Returns all circular numbers of number n"
   [n]
