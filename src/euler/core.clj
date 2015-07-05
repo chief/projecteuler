@@ -16,11 +16,6 @@
   [s tupple]
   (map #(reduce + %) (combinations s tupple)))
 
-(defn digit-x-power?
-  "Checks if a number n is equal to the sum of its digits powered by x"
-  [n x]
-  (= (int (reduce + (map #(Math/pow % x) (numbers/digits n)))) n))
-
 (defn prime-number?
   "Checks if a number is a prime number given a known set of primes"
   [n primes]

@@ -116,3 +116,8 @@
   "Returns a vector with all powers of number n between 2 <= b <= (max power)"
   [n max-power]
   (map #(numeric-tower/expt n %) (range 2 (inc max-power))))
+
+(defn digit-x-power?
+  "Checks if a number n is equal to the sum of its digits powered by x"
+  [n x]
+  (= (int (reduce + (map #(Math/pow % x) (digits n)))) n))

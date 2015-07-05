@@ -34,3 +34,14 @@
   (testing "Checking whether a number is equals to the sum of factorial of its
             digits"
     (is (= false (digit-factorial-number? 12)))))
+
+(deftest test-digit-x-power?
+  (testing "Checking whether a number is equals to the sum of its digits
+           powered by x"
+    (is (= true (digit-x-power? 1 10)))
+    (is (= false (digit-x-power? 123 5)))))
+
+(deftest test-pandigital?
+  (testing "Checking whether a number is pandigital or not"
+    (is (= true (pandigital? 987654321)))
+    (is (= false (pandigital? 987868)))))
