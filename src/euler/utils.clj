@@ -1,13 +1,12 @@
-(ns euler.utils)
-
-(use '[clojure.java.io :only (reader)])
-(require '[clojure.string :as str])
+(ns euler.utils
+  (:use [clojure.java.io :only (reader)])
+  (:require [clojure.string :as str]))
 
 (defn parse-numbers
   [file]
   (map #(Integer/parseInt %)
        (flatten
-        (map #(clojure.string/split  % #"\s+")
+        (map #(str/split  % #"\s+")
              (line-seq (reader file))))))
 
 (defn take-all-horizontal
@@ -31,8 +30,6 @@
 
 (defn parse-words
   [filename]
-  (clojure.string/split
-   (clojure.string/replace (line-seq (reader filename))  #"[\"|\\|\)|\()]" "")
+  (str/split
+   (str/replace (line-seq (reader filename))  #"[\"|\\|\)|\()]" "")
    #","))
-
-; 48477312 51267216 48477312
