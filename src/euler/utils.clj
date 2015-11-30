@@ -6,9 +6,9 @@
 (defn parse-numbers
   [file]
   (map #(Integer/parseInt %)
-    (flatten
-      (map #(clojure.string/split  % #"\s+")
-        (line-seq (reader file))))))
+       (flatten
+        (map #(clojure.string/split  % #"\s+")
+             (line-seq (reader file))))))
 
 (defn take-all-horizontal
   [s n]
@@ -29,14 +29,10 @@
   [filename]
   (map bigint (line-seq (reader filename))))
 
-
 (defn parse-words
   [filename]
   (clojure.string/split
-    (clojure.string/replace (line-seq (reader filename))  #"[\"|\\|\)|\()]" "")
-    #","))
-
-
-
+   (clojure.string/replace (line-seq (reader filename))  #"[\"|\\|\)|\()]" "")
+   #","))
 
 ; 48477312 51267216 48477312

@@ -2,10 +2,9 @@
 
 (defn leap-year
   [n]
-  (if (= (mod n 100) 0)
-    (= (mod n 400) 0)
-    (= (mod n 4) 0)))
-
+  (if (zero? (mod n 100))
+    (zero? (mod n 400))
+    (zero? (mod n 4))))
 
 (defn month-durations
   [n]
@@ -15,13 +14,13 @@
 
 (defn starting-month-days
   ([y]
-    (starting-month-days y 0))
+   (starting-month-days y 0))
   ([y offset]
-    (loop [s offset x [0] m (month-durations y)]
-      (if (empty? m)
-        [x s]
-        (let [v (+ s (first m))]
-          (recur v (conj x v) (rest m)))))))
+   (loop [s offset x [0] m (month-durations y)]
+     (if (empty? m)
+       [x s]
+       (let [v (+ s (first m))]
+         (recur v (conj x v) (rest m)))))))
 
 (defn month-days-period
   [from to]

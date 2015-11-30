@@ -7,7 +7,7 @@
   [n s]
   (if (= n 1)
     s
-    (remove #(and (division/divide? n %) (not (= n %))) s)))
+    (remove #(and (division/divide? n %) (not= n %)) s)))
 
 (defn sieve-of-eratosthenes
   "Calculate prime numbers up to number n

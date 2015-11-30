@@ -50,5 +50,4 @@
     (is (= "two hundred" (transform 200))))
 
   (testing "Getting numbers above 999 correctly"
-    (is (= "one thousand" (transform 1000))))
-  )
+    (is (= "one thousand" (transform 1000)))))

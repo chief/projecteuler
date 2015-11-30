@@ -4,7 +4,7 @@
 (defn divide?
   "Checks if number x divides n"
   [x n]
-  (= (rem n x) 0))
+  (zero? (rem n x)))
 
 (defn divisors
   "Gets divisors of number n.

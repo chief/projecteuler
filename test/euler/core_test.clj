@@ -4,7 +4,7 @@
 
 (deftest power-ten-divisor-test
   (testing "Getting maximum power ten divisor"
-    (is (= 1000 (power-ten-divisor 7676) ))))
+    (is (= 1000 (power-ten-divisor 7676)))))
 
 (deftest test-sum-of-tupples
   (testing "Getting all sums of duets"

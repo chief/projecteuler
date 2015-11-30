@@ -19,7 +19,7 @@
 (defn prime-number?
   "Checks if a number is a prime number given a known set of primes"
   [n primes]
-  (not (= (.indexOf primes n) -1)))
+  (not= (.indexOf primes n) -1))
 
 (defn count-quadratic-formulas
   "Counts the succesive times of a quadratic formula"
@@ -27,13 +27,13 @@
   (loop [x 0]
     (if (prime-number? (numbers/quadratic-formula x a b) primes)
       (recur (inc x))
-      { [a b] x })))
+      {[a b] x})))
 
 (defn examine-quadratic-formulas
   [max-a max-b]
   (let [primes (sieve-of-eratosthenes 100000)]
     (map (fn [[a b]] (count-quadratic-formulas a b primes))
-         (filter (fn [[a b]] (and (odd? a) (odd? b) (> (+ a b 1) 0)))
+         (filter (fn [[a b]] (and (odd? a) (odd? b) (pos? (+ a b 1))))
                  (for [x (range (- max-a) max-a)
                        y (range 2 max-b)] [x y])))))
 
@@ -49,7 +49,7 @@
   [n]
   (remove #(= n %)
           (filter #(and (= (numbers/count-of-digits %) (numbers/count-of-digits n)) (> % n))
-                  (map #(Integer/parseInt(apply str %)) (permutations (numbers/digits n))))))
+                  (map #(Integer/parseInt (clojure.string/join %)) (permutations (numbers/digits n))))))
 
 (defn prime-number-permutations
   "Returns prime number permutations given a number n"
@@ -65,13 +65,13 @@
         (filter (fn [a]
                   (let [d (- a n)
                         examine-prime (+ a d)]
-                    (not (= (.indexOf s examine-prime) -1))))
+                    (not= (.indexOf s examine-prime) -1)))
                 s))))
 
 (defn digits-to-integer
   "Returns an integer from a sequence of digits"
   [s]
-  (Integer/parseInt (apply str s)))
+  (Integer/parseInt (clojure.string/join s)))
 
 (defn concatenated-product
   [number n]
@@ -119,7 +119,6 @@
           numbers
           (recur r (conj numbers (digits-to-integer r))))))))
 
-
 (defn truncate-numbers
   "Returns left and right truncate numbers for number n"
   [n]
@@ -148,7 +147,7 @@
 
 (defn max-product-array
   [array]
-  (reduce * (map #(array %) (take 4 (iterate inc 0)))))
+  (reduce * (map array (take 4 (iterate inc 0)))))
 
 (defn value-of-word
   "Returns value of a word by summing each letter ranking in the english alphabet"
@@ -161,7 +160,7 @@
   [s, n]
   (if (<= n (first s))
     false
-    (or (not (= (.indexOf s (/ n 2)) -1))
+    (or (not= (.indexOf s (/ n 2)) -1)
         (let [new-sequence (filter #(< % n) s)]
           (boolean
            (some #(>= (.indexOf new-sequence %) 0)
@@ -173,8 +172,8 @@
    https://en.wikipedia.org/wiki/Ackermann_function"
   [x y]
   (cond
-    (= y 0) 0
-    (= x 0) (* 2 y)
+    (zero? y) 0
+    (zero? x) (* 2 y)
     (= y 1) 2
     :else
     (ackermann (dec x) (ackermann x (dec y)))))
@@ -189,8 +188,7 @@
 
 (defn rotate-digits
   "Returns digit rotations for a given number n"
-  [n]
-  )
+  [n])
 
 (defn power-ten-divisor
   "Returns the maximum power ten divisor"

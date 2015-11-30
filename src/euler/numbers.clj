@@ -10,7 +10,7 @@
 
   https://en.wikipedia.org/wiki/Pentagonal_number"
   [n]
-  (/ (* n (- (* 3 n) 1)) 2))
+  (/ (* n (dec (* 3 n))) 2))
 
 (def pentagons
   (map pentagon naturals))
@@ -21,14 +21,14 @@
   (reduce + (take n naturals)))
 
 (def triangles
-  (map first (iterate (fn [[a b]] [ (+ a b) (inc b)]) [1 2])))
+  (map first (iterate (fn [[a b]] [(+ a b) (inc b)]) [1 2])))
 
 (defn collatz
   "Returns a collatz number"
   [n]
   (if (even? n)
     (/ n 2)
-    (+ (* 3 n) 1)))
+    (inc (* 3 n))))
 
 (defn collatzs
   "Returns a Collatz sequence given a starting number n"
@@ -50,7 +50,7 @@
   (count (str n)))
 
 (def fibonacci-numbers
-  (map first (iterate (fn [[a b]] [ (+' a b) a]) [1 0])))
+  (map first (iterate (fn [[a b]] [(+' a b) a]) [1 0])))
 
 (defn pandigital?
   "Checks if a number is a pandigital number"
@@ -61,14 +61,13 @@
   "Given a number returns its amicable pair or nil"
   [n]
   (let [result (division/sum-of-divisors n)]
-    (if (and (not (= result n)) (= (division/sum-of-divisors result) n))
-      result
-      nil)))
+    (when (and (not= result n) (= (division/sum-of-divisors result) n))
+      result)))
 
 (defn amicable?
   "Checks if a number is amicable"
   [n]
-  (not (= (amicable-pair n) nil)))
+  (not= (amicable-pair n) nil))
 
 (defn abundant-number?
   "Checks if a number is an abundant number.
@@ -100,7 +99,7 @@
 (defn quadratic-formula
   "Applies quadratic formula in number n given a and b coefficients"
   [n a b]
-  (+ (* n n ) (* a n) b))
+  (+ (* n n) (* a n) b))
 
 (defn factorial
   "Calculates the factorial (n!) of number n"
