@@ -4,8 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :plugins [[lein-difftest "2.0.0"]]
-  :dependencies [[org.clojure/clojure "1.7.0"]
-                 [criterium "0.4.3"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [criterium "0.4.4"]
                  [org.clojure/math.numeric-tower "0.0.4"]
-                 [org.clojure/math.combinatorics "0.1.1"]
-                 [prismatic/schema "1.0.3"]])
+                 [org.clojure/math.combinatorics "0.1.3"]
+                 [prismatic/schema "1.1.1"]])
