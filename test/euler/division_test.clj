@@ -1,17 +1,19 @@
 (ns euler.division-test
   (:require [clojure.test :refer :all]
-            [euler.division :refer :all]))
+            [euler.division :refer :all]
+            [clojure.spec.gen :as gen]
+            [clojure.spec :as s]))
 
-(deftest divide?-test
+(deftest test-divide?
   (testing "Dividing two numbers"
     (is (true? (divide? 2 10)))
     (is (false? (divide? 3 11)))))
 
-(deftest divisors-test
+(deftest test-divisors
   (testing "Divisors of numbers"
     (is (= [10 1 2 5] (divisors 10)))))
 
-(deftest proper-divisors-test
+(deftest test-proper-divisors
   (testing "Proper divisors of numbers"
     (is (= [1 2 5] (proper-divisors 10)))))
 

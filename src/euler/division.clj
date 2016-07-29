@@ -1,10 +1,15 @@
 (ns euler.division
-  (:require [clojure.math.numeric-tower :as numeric-tower]))
+  (:require [clojure.math.numeric-tower :as numeric-tower]
+            [clojure.spec :as s]))
 
 (defn divide?
   "Checks if number x divides n"
   [x n]
   (zero? (rem n x)))
+
+(s/fdef divide?
+        :args (s/cat :start integer? :end integer?)
+        :ret boolean?)
 
 (defn divisors
   "Gets divisors of number n.
@@ -17,6 +22,11 @@
       (if (divide? x n)
         (recur (conj divisors x (/ n x)) (inc x))
         (recur divisors (inc x))))))
+
+(s/fdef divisors
+        :args (s/cat :n integer?)
+        :ret seq?
+        :fn #(= (first (:ret %)) (:n %))  )
 
 (defn proper-divisors
   "Gets proper divisors of number n

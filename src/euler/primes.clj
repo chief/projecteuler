@@ -20,10 +20,16 @@
         primes
         (recur (remove-multiples-of current-prime primes) (inc position))))))
 
+(defn primes-set
+  [n]
+  (sieve-of-eratosthenes (inc (/ n 2))))
+
 (defn factorization
   "Integer factorization to primes"
-  [n]
-  (let [primes (sieve-of-eratosthenes (inc (/ n 2)))]
+  ([n]
+   (factorization n (primes-set n)))
+  ([n primes]
+  (let [primes primes]
     (loop [x n factors []]
       (let [divisor (first (filter #(division/divide? % x) primes))]
         (if (nil? divisor)
@@ -31,4 +37,4 @@
           (let [result (/ x divisor)]
             (if (= result 1)
               (conj factors divisor)
-              (recur result (conj factors divisor)))))))))
+              (recur result (conj factors divisor))))))))))
