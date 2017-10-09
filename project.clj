@@ -8,5 +8,5 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha5"]
                  [criterium "0.4.4"]
                  [org.clojure/math.numeric-tower "0.0.4"]
-                 [org.clojure/math.combinatorics "0.1.3"]
-                 [prismatic/schema "1.1.3"]])
+                 [org.clojure/math.combinatorics "0.1.4"]
+                 [prismatic/schema "1.1.4"]])
