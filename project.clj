@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :plugins [[lein-difftest "2.0.0"]]
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}}
-  :dependencies [[org.clojure/clojure "1.9.0-alpha5"]
+  :dependencies [[org.clojure/clojure "1.9.0-beta2"]
                  [criterium "0.4.4"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/math.combinatorics "0.1.4"]
