@@ -1,6 +1,6 @@
 (ns euler.division
   (:require [clojure.math.numeric-tower :as numeric-tower]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as s]))
 
 (defn divide?
   "Checks if number x divides n"

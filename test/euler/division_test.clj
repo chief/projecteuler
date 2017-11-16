@@ -1,8 +1,8 @@
 (ns euler.division-test
   (:require [clojure.test :refer :all]
             [euler.division :refer :all]
-            [clojure.spec.gen :as gen]
-            [clojure.spec :as s]))
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.alpha :as s]))
 
 (deftest test-divide?
   (testing "Dividing two numbers"
